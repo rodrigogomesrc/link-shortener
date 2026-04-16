@@ -6,6 +6,9 @@ spring:
       host: localhost
       port: 6379
       timeout: 2s
+  threads:
+    virtual:
+      enabled: true
 app:
   instance:
     id: ${INSTANCE_ID:0}
