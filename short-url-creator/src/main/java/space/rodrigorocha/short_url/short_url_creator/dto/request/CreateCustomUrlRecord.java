@@ -1,4 +1,4 @@
-package dto.request;
+package space.rodrigorocha.short_url.short_url_creator.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

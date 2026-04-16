@@ -1,7 +1,11 @@
 spring:
   application:
-    name: Short URL Creator
-
+    name: Url Shortener Service
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2s
 app:
   instance:
     id: ${INSTANCE_ID:0}

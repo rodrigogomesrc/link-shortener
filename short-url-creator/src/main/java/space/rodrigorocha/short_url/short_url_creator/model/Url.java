@@ -1,18 +1,20 @@
-package model;
+package space.rodrigorocha.short_url.short_url_creator.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
-@Entity
-public class Url {
+import java.io.Serializable;
+
+@RedisHash(value = "urls")
+public class Url implements Serializable {
 
     @Id
-    @Column(name = "short_url", nullable = false, unique = true, length = 15)
     private String shortUrl;
 
-    @Column(name = "redirect_url", nullable = false, length = 2048)
     private String redirectUrl;
 
-    @Column(name = "user_email", nullable = false, length = 255)
+    @Indexed
     private String userEmail;
 
     public Url() {
@@ -47,5 +49,4 @@ public class Url {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
-
 }
