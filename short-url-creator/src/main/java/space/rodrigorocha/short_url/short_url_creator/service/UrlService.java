@@ -59,7 +59,7 @@ public class UrlService {
         StringBuilder sb = new StringBuilder(7);
 
         if (instanceId < 0 || instanceId >= BASE62.length()) {
-            throw new IllegalStateException("Instance ID inválido para Base62");
+            throw new IllegalStateException("Invalid Instance ID for Base62");
         }
         sb.append(BASE62.charAt(instanceId));
         for (int i = 0; i < 6; i++) {
