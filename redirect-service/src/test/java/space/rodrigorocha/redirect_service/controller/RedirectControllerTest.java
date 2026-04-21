@@ -9,6 +9,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import space.rodrigorocha.redirect_service.exception.NotFoundException;
 import space.rodrigorocha.redirect_service.service.RedirectService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,7 +40,7 @@ public class RedirectControllerTest {
     void redirect_ShouldReturn404_WhenUrlNotFound() throws Exception {
         String shortCode = "aaaaa";
 
-        when(redirectService.findRedirectUrl(shortCode)).thenThrow(new RuntimeException("Short URL not found: " + shortCode));
+        when(redirectService.findRedirectUrl(shortCode)).thenThrow(new NotFoundException("Short URL not found: " + shortCode));
 
         mockMvc.perform(get("/" + shortCode))
                 .andExpect(status().isNotFound());

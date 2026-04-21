@@ -8,20 +8,18 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
 @Configuration
-@EnableRedisRepositories(basePackages = "repository")
 public class RedisConfig {
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(
-            @Value("${redis.host:localhost}") String redisHost,
-            @Value("${redis.port:6379}") int redisPort) {
+            @Value("${spring.data.redis.host:localhost}") String redisHost,
+            @Value("${spring.data.redis.host:6379}") int redisPort) {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
 
         JedisClientConfiguration clientConfig = JedisClientConfiguration.builder()
