@@ -1,6 +1,5 @@
-package space.rodrigorocha.short_url.short_url_creator.config;
+package space.rodrigorocha.redirect_service.config;
 
-import space.rodrigorocha.short_url.short_url_creator.model.Url;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +9,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import space.rodrigorocha.redirect_service.model.Url;
 
 import java.time.Duration;
 
@@ -19,7 +19,7 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(
             @Value("${spring.data.redis.host:localhost}") String redisHost,
-            @Value("${spring.data.redis.host:6379}") int redisPort) {
+            @Value("${spring.data.redis.port:6379}") int redisPort) {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
 
         JedisClientConfiguration clientConfig = JedisClientConfiguration.builder()
