@@ -1,5 +1,6 @@
 package space.rodrigorocha.short_url.short_url_creator.config;
 
+import org.springframework.data.redis.connection.RedisPassword;
 import space.rodrigorocha.short_url.short_url_creator.model.Url;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,14 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(
             @Value("${spring.data.redis.host:localhost}") String redisHost,
-            @Value("${spring.data.redis.host:6379}") int redisPort) {
+            @Value("${spring.data.redis.port:6379}") int redisPort,
+            @Value("${spring.data.redis.password:}") String redisPassword) {
+
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
+
+        if (redisPassword != null && !redisPassword.isEmpty()) {
+            redisConfig.setPassword(RedisPassword.of(redisPassword));
+        }
 
         JedisClientConfiguration clientConfig = JedisClientConfiguration.builder()
                 .connectTimeout(Duration.ofSeconds(2))
