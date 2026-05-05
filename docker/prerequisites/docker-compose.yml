@@ -1,7 +1,7 @@
 services:
-  redis:
+  redis1:
     image: redis:7.2
-    container_name: redis
+    container_name: redis1
     ports:
       - "6379:6379"
     command: >
@@ -14,7 +14,24 @@ services:
       --requirepass "${REDIS_PASSWORD:?REDIS_PASSWORD must be set}"
     volumes:
       - redis-data:/data
+      
+  redis-gateway:
+    image: redis:7.2
+    container_name: redis-gateway
+    ports:
+      - "6380:6379"
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --requirepass "${REDIS_GATEWAY_PASSWORD:?REDIS_GATEWAY_PASSWORD must be set}"
+    volumes:
+      - redis-data-gateway:/data
 
 volumes:
   redis-data:
+  redis-data-gateway:
 
