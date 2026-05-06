@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "configserver:http://localhost:8888"
+  cloud:
+    gateway:
+      server:
+        webflux:
+          redis-rate-limiter:
+            default-replenish-rate: 10
+            default-burst-capacity: 100
+            default-requested-tokens: 1
+          routes:
+            - id: short-url-creator
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/urls, /api/urls/**
+                - Method=POST
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    rate-limiter: "#{@writeRateLimiter}"
+                    key-resolver: "#{@userIpKeyResolver}"
+                - name: CircuitBreaker
+                  args:
+                    name: writeCircuitBreaker
+                    fallbackUri: forward:/fallback
+            - id: redirect-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/**
+              filters:
+                - name: Analytics
+                - name: RequestRateLimiter
+                  args:
+                    rate-limiter: "#{@readRateLimiter}"
+                    key-resolver: "#{@userIpKeyResolver}"
+                - name: CircuitBreaker
+                  args:
+                    name: readCircuitBreaker
+                    fallbackUri: forward:/fallback
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 3s
+
+logging:
+  level:
+    org.springframework.cloud.gateway: ERROR
+    reactor.netty.http.client: ERROR
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,gateway,metrics"
+  endpoint:
+    health:
+      show-details: always
