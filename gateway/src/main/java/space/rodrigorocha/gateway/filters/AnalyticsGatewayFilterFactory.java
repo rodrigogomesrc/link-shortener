@@ -1,5 +1,6 @@
 package space.rodrigorocha.gateway.filters;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -13,42 +14,37 @@ public class AnalyticsGatewayFilterFactory extends AbstractGatewayFilterFactory<
         super(Config.class);
     }
 
-    @Override
-    public GatewayFilter apply(Config config) {
+    public @NonNull GatewayFilter apply(@NonNull Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
 
-            // Capture the IP
-            String ipAddress = request.getHeaders().getFirst("X-Forwarded-For");
-            if (ipAddress == null || ipAddress.isEmpty()) {
-                ipAddress = request.getRemoteAddress() != null ?
-                        request.getRemoteAddress().getAddress().getHostAddress() : "unknown";
+            String ipAddress;
+            if (request.getRemoteAddress() != null && request.getRemoteAddress().getAddress() != null) {
+                ipAddress = request.getRemoteAddress().getAddress().getHostAddress();
+            } else {
+                ipAddress =  "unknown";
             }
 
-            // User-Agent
             String userAgent = request.getHeaders().getFirst(HttpHeaders.USER_AGENT);
-            if (userAgent == null || userAgent.isEmpty()) {
-                userAgent = "unknown";
-            }
+            if (userAgent == null || userAgent.isEmpty()) userAgent = "unknown";
 
-            // Referer
             String referer = request.getHeaders().getFirst(HttpHeaders.REFERER);
-            if (referer == null || referer.isEmpty()) {
-                referer = "direct";
-            }
+            if (referer == null || referer.isEmpty()) referer = "direct";
 
-            // Language
             String acceptLanguage = request.getHeaders().getFirst(HttpHeaders.ACCEPT_LANGUAGE);
-            if (acceptLanguage == null || acceptLanguage.isEmpty()) {
-                acceptLanguage = "unknown";
-            }
+            if (acceptLanguage == null || acceptLanguage.isEmpty()) acceptLanguage =  "unknown";
 
-            // create the headers
+            String finalUserAgent = userAgent;
+            String finalReferer = referer;
+            String finalAcceptLanguage = acceptLanguage;
+
             ServerHttpRequest mutatedRequest = request.mutate()
-                    .header("X-Analytics-IP", ipAddress)
-                    .header("X-Analytics-Device", userAgent)
-                    .header("X-Analytics-Referer", referer)
-                    .header("X-Analytics-Language", acceptLanguage)
+                    .headers(httpHeaders -> {
+                        httpHeaders.set("X-Analytics-IP", ipAddress);
+                        httpHeaders.set("X-Analytics-Device", finalUserAgent);
+                        httpHeaders.set("X-Analytics-Referer", finalReferer);
+                        httpHeaders.set("X-Analytics-Language", finalAcceptLanguage);
+                    })
                     .build();
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
