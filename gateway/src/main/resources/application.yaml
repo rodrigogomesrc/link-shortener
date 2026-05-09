@@ -2,7 +2,7 @@ spring:
   application:
     name: api-gateway
   config:
-    import: "configserver:http://localhost:8888"
+    import: "configserver:http://config-server:8888"
   cloud:
     gateway:
       server:
@@ -13,7 +13,7 @@ spring:
             default-requested-tokens: 1
           routes:
             - id: short-url-creator
-              uri: http://localhost:8081
+              uri: http://short-url-creator:8081
               predicates:
                 - Path=/api/urls, /api/urls/**
                 - Method=POST
@@ -27,7 +27,7 @@ spring:
                     name: writeCircuitBreaker
                     fallbackUri: forward:/fallback
             - id: redirect-service
-              uri: http://localhost:8082
+              uri: http://redirect-service:8082
               predicates:
                 - Path=/**
               filters:
