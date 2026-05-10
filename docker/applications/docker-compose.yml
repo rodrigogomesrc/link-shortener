@@ -9,7 +9,7 @@ services:
       - SPRING_PROFILES_ACTIVE=${PROFILE:-git}
       - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=file:///config-repo
     volumes:
-      - /home/rodrigo/Documents/reprogramming/link-shortener-config-repo:/config-repo
+      - ${CONFIG_REPO_PATH:?}:/config-repo
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8888/actuator/health"]
       interval: 10s
@@ -61,7 +61,7 @@ services:
     networks:
       - short-url-network
 
-  redirect-server:
+  redirect-service:
     container_name: redirect-service
     build:
       context: ../../redirect-service

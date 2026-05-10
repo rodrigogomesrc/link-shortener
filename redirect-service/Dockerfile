@@ -10,7 +10,8 @@ RUN ./mvnw dependency:go-offline
 COPY src src
 RUN ./mvnw clean package -DskipTests
 
-RUN java -Djarmode=layertools -jar target/*.jar extract --destination extracted
+RUN cp target/*-SNAPSHOT.jar app.jar || cp target/*.jar app.jar
+RUN java -Djarmode=layertools -jar app.jar extract --destination extracted
 
 # Estagio 2: Imagem final de execucao
 FROM eclipse-temurin:25-jre-alpine
