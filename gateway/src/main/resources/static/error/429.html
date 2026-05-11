@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>429 - Muitas Requisições</title>
+    <style>
+        :root {
+            --bg-color: #1a1b1e;
+            --card-bg: #25262b;
+            --text-main: #e4e5e8;
+            --text-muted: #909296;
+            --accent-color: #36009f;
+            --accent-secondary: #2caaef;
+            --shadow-color: rgba(54, 0, 159, 0.4);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .error-card {
+            background-color: var(--card-bg);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-top: 5px solid var(--accent-color);
+        }
+        h1 {
+            font-size: 6rem;
+            margin: 0;
+            line-height: 1;
+            color: var(--accent-color);
+            text-shadow: 0 0 20px var(--shadow-color);
+        }
+        .kaomoji {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .message-box {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent-secondary);
+            padding-left: 15px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .instruction {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+<div class="error-card">
+    <h1>429</h1>
+    <div class="kaomoji">(＠_＠;)</div>
+    <h2>Muitas Requisições</h2>
+    <div class="message-box">
+        Calma lá, velocista! Nosso servidor está ficando tonto com a quantidade de requisições que você está enviando. Vamos dar uma respirada?
+    </div>
+    <div class="instruction">
+        Dica: Pegue um café, espere alguns segundos e tente recarregar a página. Logo logo a gente te atende!
+    </div>
+</div>
+</body>
+</html>
