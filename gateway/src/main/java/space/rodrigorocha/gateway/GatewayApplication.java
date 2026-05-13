@@ -1,13 +1,13 @@
-package space.rodrigorocha.redirect_service;
+package space.rodrigorocha.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RedirectServiceApplication {
+public class GatewayApplication {
 
 	static void main(String[] args) {
-		SpringApplication.run(RedirectServiceApplication.class, args);
+		SpringApplication.run(GatewayApplication.class, args);
 	}
 
 }

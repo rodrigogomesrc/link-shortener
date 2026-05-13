@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>503 - Serviço Indisponível</title>
+    <style>
+        :root {
+            --bg-color: #1a1b1e;
+            --card-bg: #25262b;
+            --text-main: #e4e5e8;
+            --text-muted: #909296;
+            --accent-blue: #2caaef;
+            --accent-purple: #36009f;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .error-card {
+            background-color: var(--card-bg);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-top: 5px solid;
+            border-image: linear-gradient(to right, var(--accent-purple), var(--accent-blue)) 1;
+        }
+        h1 {
+            font-size: 6rem;
+            margin: 0;
+            line-height: 1;
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .kaomoji {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .message-box {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            border-left: 3px solid #555;
+            padding-left: 15px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .instruction {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+<div class="error-card">
+    <h1>503</h1>
+    <div class="kaomoji">(x_x)</div>
+    <h2>Serviço Indisponível</h2>
+    <div class="message-box">
+        Ops! Nossos hamsters que rodam os servidores tiraram uma soneca ou tropeçaram nos cabos. Estamos trabalhando para acordá-los.
+    </div>
+    <div class="instruction">
+        Dica: Tente recarregar a página daqui a alguns minutinhos. Geralmente não demora muito!
+    </div>
+</div>
+</body>
+</html>
