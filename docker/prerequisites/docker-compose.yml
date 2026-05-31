@@ -1,9 +1,7 @@
 services:
   redis1:
     image: redis:7.2
-    container_name: redis1
-    ports:
-      - "6379:6379"
+    hostname: redis1
     command: >
       redis-server
       --appendonly yes
@@ -11,17 +9,26 @@ services:
       --save 900 1
       --save 300 10
       --save 60 10000
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
       --requirepass "${REDIS_PASSWORD:?REDIS_PASSWORD must be set}"
     volumes:
       - redis-data:/data
+    expose:
+      - "6379"
     networks:
       - short-url-network
-      
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
   redis-gateway:
     image: redis:7.2
-    container_name: redis-gateway
-    ports:
-      - "6380:6379"
+    hostname: redis-gateway
     command: >
       redis-server
       --appendonly yes
@@ -29,17 +36,92 @@ services:
       --save 900 1
       --save 300 10
       --save 60 10000
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
       --requirepass "${REDIS_GATEWAY_PASSWORD:?REDIS_GATEWAY_PASSWORD must be set}"
     volumes:
       - redis-data-gateway:/data
+    expose:
+      - "6379"
     networks:
       - short-url-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_GATEWAY_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  postgres_keycloak:
+    image: postgres:${POSTGRESQL_VERSION}
+    hostname: postgres-keycloak
+    environment:
+      TZ: ${TIMEZONE}
+      PGTZ: ${TIMEZONE}
+      POSTGRES_DB: ${POSTGRESQL_KEYCLOAK_DATABASE}
+      POSTGRES_USER: ${POSTGRESQL_KEYCLOAK_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRESQL_KEYCLOAK_PASSWORD}
+    volumes:
+      - keycloak-postgres:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - short-url-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRESQL_KEYCLOAK_USERNAME} -d ${POSTGRESQL_KEYCLOAK_DATABASE}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    hostname: keycloak
+    command:
+      - start-dev
+    environment:
+      TZ: ${TIMEZONE}
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres_keycloak
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: ${POSTGRESQL_KEYCLOAK_DATABASE}
+      KC_DB_USERNAME: ${POSTGRESQL_KEYCLOAK_USERNAME}
+      KC_DB_PASSWORD: ${POSTGRESQL_KEYCLOAK_PASSWORD}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: xforwarded
+    ports:
+      - "8090:8080"
+    networks:
+      - short-url-network
+    depends_on:
+      postgres_keycloak:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/localhost/8080"
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
 
 volumes:
   redis-data:
   redis-data-gateway:
+  postgres-users:
+  keycloak-postgres:
 
 networks:
   short-url-network:
-    name: short-url-network
-    driver: bridge
+    external: true
