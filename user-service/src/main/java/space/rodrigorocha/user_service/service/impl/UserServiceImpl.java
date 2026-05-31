@@ -64,10 +64,13 @@ public class UserServiceImpl implements UserService {
             } else {
                 throw new KeycloakIntegrationException("Error creating user. Keycloak status code: " + response.getStatus(), null);
             }
-        } catch (UserAlreadyExistsException e) {
+            // A alteração foi feita nesta linha abaixo, incluindo a KeycloakIntegrationException
+        } catch (UserAlreadyExistsException | ResourceNotFoundException | KeycloakIntegrationException e) {
             throw e;
         } catch (Exception e) {
-            throw new KeycloakIntegrationException("Unexpected failure communication with Keycloak.", e);
+            throw new KeycloakIntegrationException(
+                    "Unexpected failure while communicating with Keycloak when creating user with email: " +
+                            request.email(), e);
         }
     }
 
@@ -91,47 +94,62 @@ public class UserServiceImpl implements UserService {
     @Override
     public void assignRoleToUser(String userId, String roleName) {
 
+        final String canonicalRoleName;
+
         try {
-            RolesEnum role = RolesEnum.valueOf(roleName.toUpperCase());
+            canonicalRoleName = RolesEnum.valueOf(roleName.toUpperCase()).name();
         } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException("Usuario ou Role nao encontrados.");
+            throw new ResourceNotFoundException("User or ROLE not found");
         }
 
         try {
             RealmResource realmResource = keycloak.realm(realm);
             UserResource userResource = realmResource.users().get(userId);
 
-            RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
+            RoleRepresentation role = realmResource
+                    .roles()
+                    .get(canonicalRoleName)
+                    .toRepresentation();
+
             userResource.roles().realmLevel().add(Collections.singletonList(role));
 
         } catch (NotFoundException e) {
             throw new ResourceNotFoundException("User or ROLE not found");
         } catch (Exception e) {
-            throw new KeycloakIntegrationException("Failure attributing role to user with ID: " + userId, e);
+            throw new KeycloakIntegrationException(
+                    "Failure attributing role to user with ID: " + userId, e);
         }
-
     }
 
     @Override
     public void removeRoleFromUser(String userId, String roleName) {
 
+        RolesEnum roleEnum;
+
         try {
-            RolesEnum role = RolesEnum.valueOf(roleName.toUpperCase());
+            roleEnum = RolesEnum.valueOf(roleName.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException("Usuario ou Role nao encontrados.");
+            throw new ResourceNotFoundException("User or ROLE not found");
         }
 
         try {
             RealmResource realmResource = keycloak.realm(realm);
             UserResource userResource = realmResource.users().get(userId);
 
-            RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
+            RoleRepresentation role = realmResource
+                    .roles()
+                    .get(roleEnum.name())
+                    .toRepresentation();
+
             userResource.roles().realmLevel().remove(Collections.singletonList(role));
+
         } catch (NotFoundException e) {
             throw new ResourceNotFoundException("User or ROLE not found");
         } catch (Exception e) {
-            throw new KeycloakIntegrationException("Failure attributing role to user with ID: " + userId, e);
+            throw new KeycloakIntegrationException(
+                    "Failure removing role '" + roleEnum.name()
+                            + "' from user with ID: " + userId,
+                    e);
         }
-
     }
 }

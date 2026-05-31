@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
 
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validaton error on fields", errors);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation error on fields", errors);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
