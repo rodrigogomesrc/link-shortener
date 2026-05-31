@@ -53,7 +53,7 @@ class UserControllerTest {
 
     @Test
     void createUser_BadRequest_WhenInvalidData() throws Exception {
-        // Arrange: Criando um request com dados invalidos (ex: email nulo e senha curta)
+        // Arrange: invalid data
         UserCreationRequestRecord request = new UserCreationRequestRecord(
                 null, "short", "John", "Doe");
 
