@@ -97,10 +97,16 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: xforwarded
+      
+      KC_SPI_THEME_CACHE_THEMES: "false"
+      KC_SPI_THEME_CACHE_TEMPLATES: "false"
+      KC_SPI_THEME_STATIC_MAX_AGE: "-1"
     ports:
       - "8090:8080"
     networks:
       - short-url-network
+    volumes:
+      - ../../keycloak-theme/shortener:/opt/keycloak/themes/shortener
     depends_on:
       postgres_keycloak:
         condition: service_healthy
