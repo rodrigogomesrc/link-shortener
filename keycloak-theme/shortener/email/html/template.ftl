@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Aplicando a fonte moderna */
 body, 
 .login-pf body,
 h1, h2, input, button, label {
@@ -14,7 +13,7 @@ h1, h2, input, button, label {
     background-color: #06142e;
 }
 
-/* Ajuste da posição do Título para ficar mais próximo ao card */
+/* make title closer to card */
 #kc-header {
     margin-top: 6vh; /* Top distance */
     margin-bottom: 20px !important; /* Login card distance */
