@@ -3,8 +3,7 @@ package space.rodrigorocha.short_url.short_url_creator.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.MediaType;
@@ -52,8 +51,10 @@ class UrlControllerTest {
         mockMvc.perform(post("/api/urls")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(record)))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Could not generate short URL"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Not able to generate unique short URL after maximum retries"))
+                .andExpect(jsonPath("$.status")
+                        .value(500));
     }
 
     @Test
@@ -79,7 +80,9 @@ class UrlControllerTest {
         mockMvc.perform(post("/api/urls/custom")
                         .contentType(String.valueOf(MediaType.APPLICATION_JSON))
                         .content(objectMapper.writeValueAsString(record)))
-                .andExpect(status().isConflict())
-                .andExpect(content().string("Custom URL already exists"));
+                .andExpect(jsonPath("$.detail")
+                        .value("Custom URL already exists"))
+                .andExpect(jsonPath("$.status")
+                        .value(409));
     }
 }

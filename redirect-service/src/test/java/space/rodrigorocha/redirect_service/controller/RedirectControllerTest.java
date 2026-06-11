@@ -7,14 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import space.rodrigorocha.redirect_service.config.GlobalExceptionHandler;
 import space.rodrigorocha.redirect_service.exception.NotFoundException;
 import space.rodrigorocha.redirect_service.service.RedirectService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RedirectController.class)
+@Import(GlobalExceptionHandler.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class RedirectControllerTest {
 
@@ -38,12 +43,20 @@ public class RedirectControllerTest {
 
     @Test
     void redirect_ShouldReturn404_WhenUrlNotFound() throws Exception {
+
         String shortCode = "aaaaa";
 
-        when(redirectService.findRedirectUrl(shortCode)).thenThrow(new NotFoundException("Short URL not found: " + shortCode));
+        when(redirectService.findRedirectUrl(shortCode))
+                .thenThrow(new NotFoundException("Short URL not found: " + shortCode));
 
         mockMvc.perform(get("/" + shortCode))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.title")
+                        .value("Resource not found"))
+                .andExpect(jsonPath("$.detail")
+                        .value("Short URL not found: " + shortCode))
+                .andExpect(jsonPath("$.status")
+                        .value(404));
     }
 
 }

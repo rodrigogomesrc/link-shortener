@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import space.rodrigorocha.redirect_service.exception.NotFoundException;
 import space.rodrigorocha.redirect_service.service.RedirectService;
 
 import java.net.URI;
@@ -21,18 +20,10 @@ public class RedirectController {
 
     @GetMapping("/{code}")
     public ResponseEntity<Void> redirect(@PathVariable String code){
-        String urlToRedirect;
-        try {
-            urlToRedirect = redirectService.findRedirectUrl(code);
-
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-
+        String urlToRedirect = redirectService.findRedirectUrl(code);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(urlToRedirect))
                 .build();
     }
-
 
 }

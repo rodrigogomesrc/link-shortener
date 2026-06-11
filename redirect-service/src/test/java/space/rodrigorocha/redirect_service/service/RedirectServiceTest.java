@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import space.rodrigorocha.redirect_service.exception.NotFoundException;
 import space.rodrigorocha.redirect_service.model.Url;
 import space.rodrigorocha.redirect_service.repository.UrlRepository;
