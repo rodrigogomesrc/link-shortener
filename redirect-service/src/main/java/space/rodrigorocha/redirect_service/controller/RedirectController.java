@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import space.rodrigorocha.redirect_service.service.RedirectService;
+import space.rodrigorocha.redirect_service.service.impl.RedirectServiceImpl;
 
 import java.net.URI;
 
@@ -14,8 +15,8 @@ public class RedirectController {
 
     private final RedirectService redirectService;
 
-    public RedirectController(RedirectService redirectService) {
-        this.redirectService = redirectService;
+    public RedirectController(RedirectServiceImpl redirectServiceImpl) {
+        this.redirectService = redirectServiceImpl;
     }
 
     @GetMapping("/{code}")

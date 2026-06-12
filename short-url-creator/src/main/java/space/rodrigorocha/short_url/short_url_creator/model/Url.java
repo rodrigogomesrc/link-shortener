@@ -2,7 +2,6 @@ package space.rodrigorocha.short_url.short_url_creator.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
 
@@ -14,7 +13,6 @@ public class Url implements Serializable {
 
     private String redirectUrl;
 
-    @Indexed
     private String userEmail;
 
     public Url() {

@@ -24,9 +24,10 @@ import space.rodrigorocha.short_url.short_url_creator.exception.CustomUrlAlready
 import space.rodrigorocha.short_url.short_url_creator.exception.MaxRetriesReachedException;
 import space.rodrigorocha.short_url.short_url_creator.model.Url;
 import space.rodrigorocha.short_url.short_url_creator.repository.UrlRepository;
+import space.rodrigorocha.short_url.short_url_creator.service.impl.UrlServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
-public class UrlServiceTest {
+public class UrlServiceImplTest {
 
     @Mock
     private UrlRepository urlRepository;
@@ -35,7 +36,7 @@ public class UrlServiceTest {
 
     @BeforeEach
     void setUp() {
-        urlService = new UrlService(urlRepository, VALID_INSTANCE_ID);
+        urlService = new UrlServiceImpl(urlRepository, VALID_INSTANCE_ID);
     }
 
     @Test
@@ -138,20 +139,20 @@ public class UrlServiceTest {
     @Test
     void createShortUrl_ShouldThrowIllegalStateException_WhenInstanceIdIsInvalid() {
 
-        UrlService invalidUrlService = new UrlService(urlRepository, -1);
-        UrlService invalidUrlService2 = new UrlService(urlRepository, -1);
+        UrlServiceImpl invalidUrlServiceImpl = new UrlServiceImpl(urlRepository, -1);
+        UrlServiceImpl invalidUrlServiceImpl2 = new UrlServiceImpl(urlRepository, -1);
         CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@email.com");
 
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
-                () -> invalidUrlService.createShortUrl(record)
+                () -> invalidUrlServiceImpl.createShortUrl(record)
         );
 
         assertEquals("Invalid Instance ID for Base62", exception.getMessage());
 
         IllegalStateException exception2 = assertThrows(
                 IllegalStateException.class,
-                () -> invalidUrlService2.createShortUrl(record)
+                () -> invalidUrlServiceImpl2.createShortUrl(record)
         );
 
         assertEquals("Invalid Instance ID for Base62", exception2.getMessage());

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import space.rodrigorocha.short_url.short_url_creator.service.UrlService;
+import space.rodrigorocha.short_url.short_url_creator.service.impl.UrlServiceImpl;
 
 @Tag(name = "Urls")
 @RestController
@@ -14,7 +15,7 @@ public class UrlController {
 
     private final UrlService service;
 
-    public UrlController(UrlService service){
+    public UrlController(UrlServiceImpl service){
         this.service = service;
     }
 
