@@ -1,8 +1,11 @@
 package space.rodrigorocha.short_url.short_url_creator.dto.request;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import java.time.Instant;
 
 public record CreateCustomUrlRecord(
 
@@ -15,6 +18,9 @@ public record CreateCustomUrlRecord(
     String customUrl,
 
     @Pattern(regexp = "^([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})?$", message = "Invalid email")
-    String userEmail
+    String userEmail,
+
+    @Future(message = "Expiration date must be a future date")
+    Instant expiration
     ) {
 }

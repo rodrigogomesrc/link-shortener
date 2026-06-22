@@ -15,7 +15,7 @@ public class UrlController {
 
     private final UrlService service;
 
-    public UrlController(UrlServiceImpl service){
+    public UrlController(UrlService service){
         this.service = service;
     }
 

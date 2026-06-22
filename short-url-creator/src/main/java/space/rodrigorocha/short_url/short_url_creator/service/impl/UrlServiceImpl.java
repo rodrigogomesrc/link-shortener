@@ -12,6 +12,7 @@ import space.rodrigorocha.short_url.short_url_creator.repository.UrlRepository;
 import space.rodrigorocha.short_url.short_url_creator.service.UrlService;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 
 @Service
 public class UrlServiceImpl implements UrlService {
@@ -27,11 +28,11 @@ public class UrlServiceImpl implements UrlService {
     }
 
     public String createShortUrl(CreateShortUrlRecord record)  {
-        return createShortUrl(record.url(), record.userEmail());
+        return createShortUrl(record.url(), record.userEmail(), record.expiration());
     }
 
     public String createCustomUrl(CreateCustomUrlRecord record)  {
-        Url customUrl = new Url(record.customUrl(), record.url(), record.userEmail());
+        Url customUrl = new Url(record.customUrl(), record.url(), record.userEmail(), record.expiration());
         if (urlRepository.existsById(record.customUrl())) {
            throw new CustomUrlAlreadyExistsException("Custom URL already exists");
         }
@@ -40,13 +41,13 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @NonNull
-    private String createShortUrl(String originalUrl, String userEmail) {
+    private String createShortUrl(String originalUrl, String userEmail, Instant expiration) {
         int maxAttempts = 5;
         while (maxAttempts > 0) {
             String shortUrl = this.createRandomString();
 
             if (!urlRepository.existsById(shortUrl)) {
-                Url url = new Url(shortUrl, originalUrl, userEmail);
+                Url url = new Url(shortUrl, originalUrl, userEmail, expiration);
                 urlRepository.save(url);
                 return shortUrl;
             }

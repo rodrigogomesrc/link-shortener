@@ -32,7 +32,7 @@ class UrlControllerTest {
 
     @Test
     void createShortUrl_ShouldReturn200AndUrl_WhenSuccessful() throws Exception {
-        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@email.com");
+        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@email.com", null);
         when(urlService.createShortUrl(any(CreateShortUrlRecord.class))).thenReturn("AbCdEfG");
 
         mockMvc.perform(post("/api/urls")
@@ -44,7 +44,8 @@ class UrlControllerTest {
 
     @Test
     void createShortUrl_ShouldReturn500_WhenMaxRetriesReached() throws Exception {
-        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@email.com");
+        CreateShortUrlRecord record = new CreateShortUrlRecord(
+                "https://original-website.com", "user@email.com", null);
         when(urlService.createShortUrl(any(CreateShortUrlRecord.class)))
                 .thenThrow(new MaxRetriesReachedException("Not able to generate unique short URL after maximum retries"));
 
@@ -60,7 +61,8 @@ class UrlControllerTest {
     @Test
     void createCustomUrl_ShouldReturn200AndUrl_WhenSuccessful() throws Exception {
 
-        CreateCustomUrlRecord record = new CreateCustomUrlRecord("meu-link", "https://site-original.com", "user@email.com");
+        CreateCustomUrlRecord record = new CreateCustomUrlRecord(
+                "meu-link", "https://site-original.com", "user@email.com", null);
         when(urlService.createCustomUrl(any(CreateCustomUrlRecord.class))).thenReturn("meu-link");
 
         mockMvc.perform(post("/api/urls/custom")
@@ -73,7 +75,8 @@ class UrlControllerTest {
     @Test
     void createCustomUrl_ShouldReturn409_WhenUrlAlreadyExists() throws Exception {
 
-        CreateCustomUrlRecord record = new CreateCustomUrlRecord("meu-link", "https://site-original.com", "user@email.com");
+        CreateCustomUrlRecord record = new CreateCustomUrlRecord(
+                "meu-link", "https://site-original.com", "user@email.com", null);
         when(urlService.createCustomUrl(any(CreateCustomUrlRecord.class)))
                 .thenThrow(new CustomUrlAlreadyExistsException("Custom URL already exists"));
 

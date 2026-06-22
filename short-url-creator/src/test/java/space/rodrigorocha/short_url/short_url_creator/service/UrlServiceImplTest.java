@@ -41,7 +41,8 @@ public class UrlServiceImplTest {
 
     @Test
     void createCustomUrl_ShouldSaveAndReturnCustomUrl_WhenItDoesNotExist() throws CustomUrlAlreadyExistsException {
-        CreateCustomUrlRecord record = new CreateCustomUrlRecord("https://original-website.com", "custom-link", "user@email.com");
+        CreateCustomUrlRecord record = new CreateCustomUrlRecord(
+                "https://original-website.com", "custom-link", "user@email.com", null);
         when(urlRepository.existsById("custom-link")).thenReturn(false);
 
         String result = urlService.createCustomUrl(record);
@@ -59,7 +60,8 @@ public class UrlServiceImplTest {
     @Test
     void createCustomUrl_ShouldThrowException_WhenCustomUrlAlreadyExists() throws CustomUrlAlreadyExistsException {
 
-        CreateCustomUrlRecord record = new CreateCustomUrlRecord("https://original-website.com","custom-link",  "user@email.com");
+        CreateCustomUrlRecord record = new CreateCustomUrlRecord(
+                "https://original-website.com","custom-link",  "user@email.com", null);
         when(urlRepository.existsById("custom-link")).thenReturn(true);
 
         CustomUrlAlreadyExistsException exception = assertThrows(
@@ -73,7 +75,8 @@ public class UrlServiceImplTest {
 
     @Test
     void createShortUrl_ShouldGenerateAndSaveUrl_OnFirstAttempt() throws MaxRetriesReachedException {
-        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@mail.com");
+        CreateShortUrlRecord record = new CreateShortUrlRecord(
+                "https://original-website.com", "user@mail.com", null);
         when(urlRepository.existsById(anyString())).thenReturn(false);
 
         String result = urlService.createShortUrl(record);
@@ -94,7 +97,8 @@ public class UrlServiceImplTest {
     @Test
     void createShortUrl_ShouldRetryAndSave_WhenCollisionsOccur() throws MaxRetriesReachedException {
 
-        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@mail.com");
+        CreateShortUrlRecord record = new CreateShortUrlRecord(
+                "https://original-website.com", "user@mail.com", null);
         when(urlRepository.existsById(anyString()))
                 .thenReturn(true)
                 .thenReturn(true)
@@ -122,7 +126,8 @@ public class UrlServiceImplTest {
     @Test
     void createShortUrl_ShouldThrowException_WhenMaxRetriesAreReached() {
 
-        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@mail.com");
+        CreateShortUrlRecord record = new CreateShortUrlRecord(
+                "https://original-website.com", "user@mail.com", null);
         when(urlRepository.existsById(anyString())).thenReturn(true);
 
         MaxRetriesReachedException exception = assertThrows(
@@ -141,7 +146,8 @@ public class UrlServiceImplTest {
 
         UrlServiceImpl invalidUrlServiceImpl = new UrlServiceImpl(urlRepository, -1);
         UrlServiceImpl invalidUrlServiceImpl2 = new UrlServiceImpl(urlRepository, -1);
-        CreateShortUrlRecord record = new CreateShortUrlRecord("https://original-website.com", "user@email.com");
+        CreateShortUrlRecord record = new CreateShortUrlRecord(
+                "https://original-website.com", "user@email.com", null);
 
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
