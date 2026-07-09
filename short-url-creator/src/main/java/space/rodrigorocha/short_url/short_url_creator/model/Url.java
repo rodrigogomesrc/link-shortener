@@ -2,9 +2,9 @@ package space.rodrigorocha.short_url.short_url_creator.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 @RedisHash(value = "urls")
 public class Url implements Serializable {
@@ -14,16 +14,24 @@ public class Url implements Serializable {
 
     private String redirectUrl;
 
-    @Indexed
     private String userEmail;
+
+    private Instant createdAt;
+
+    private Instant expiration;
 
     public Url() {
     }
 
-    public Url(String shortUrl, String redirectUrl, String userEmail) {
+    public Url(String shortUrl,
+               String redirectUrl,
+               String userEmail,
+               Instant expiration) {
         this.shortUrl = shortUrl;
         this.redirectUrl = redirectUrl;
         this.userEmail = userEmail;
+        this.createdAt = Instant.now();
+        this.expiration = expiration;
     }
 
     public String getShortUrl() {
@@ -48,5 +56,21 @@ public class Url implements Serializable {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(Instant expiration) {
+        this.expiration = expiration;
     }
 }

@@ -1,4 +1,4 @@
-# Estagio 1: Build e extracao das camadas
+# Stage 1: Build e layer extraction
 FROM eclipse-temurin:25-jdk-alpine AS builder
 WORKDIR /build
 
@@ -13,7 +13,7 @@ RUN ./mvnw clean package -DskipTests
 RUN cp target/*-SNAPSHOT.jar app.jar || cp target/*.jar app.jar
 RUN java -Djarmode=layertools -jar app.jar extract --destination extracted
 
-# Estagio 2: Imagem final de execucao
+# Stage 2: Final image execution
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
