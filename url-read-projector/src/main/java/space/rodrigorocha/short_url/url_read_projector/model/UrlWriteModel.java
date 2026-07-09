@@ -25,6 +25,7 @@ public class UrlWriteModel implements Serializable {
         this.redirectUrl = redirectUrl;
         this.userEmail = userEmail;
         this.createdAt = Instant.now();
+        this.expiration = expiration;
     }
 
     public String getShortUrl() {

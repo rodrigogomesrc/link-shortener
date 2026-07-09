@@ -11,4 +11,5 @@ spring:
         handleUrlCreatedEvent-in-0:
           destination: urls
           group: url-read-projector-group
-  port: 8085
+  server:
+    port: 8085

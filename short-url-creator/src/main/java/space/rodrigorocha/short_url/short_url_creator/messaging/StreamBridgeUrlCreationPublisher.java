@@ -6,11 +6,11 @@ import space.rodrigorocha.short_url.short_url_creator.model.Url;
 import space.rodrigorocha.short_url.short_url_creator.service.UrlCreationEventPublisher;
 
 @Component
-public class SteamBridgeUrlCreationPublisher implements UrlCreationEventPublisher {
+public class StreamBridgeUrlCreationPublisher implements UrlCreationEventPublisher {
 
     private final StreamBridge streamBridge;
 
-    public SteamBridgeUrlCreationPublisher(StreamBridge steamBridge) {
+    public StreamBridgeUrlCreationPublisher(StreamBridge steamBridge) {
         this.streamBridge = steamBridge;
     }
 

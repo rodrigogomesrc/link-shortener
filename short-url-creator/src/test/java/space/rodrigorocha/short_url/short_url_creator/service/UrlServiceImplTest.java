@@ -32,11 +32,15 @@ public class UrlServiceImplTest {
     @Mock
     private UrlRepository urlRepository;
     private UrlService urlService;
+
+    @Mock
+    private UrlCreationEventPublisher eventPublisher;
+
     private final int VALID_INSTANCE_ID = 1;
 
     @BeforeEach
     void setUp() {
-        urlService = new UrlServiceImpl(urlRepository, VALID_INSTANCE_ID, null);
+        urlService = new UrlServiceImpl(urlRepository, VALID_INSTANCE_ID, eventPublisher);
     }
 
     @Test
@@ -144,8 +148,8 @@ public class UrlServiceImplTest {
     @Test
     void createShortUrl_ShouldThrowIllegalStateException_WhenInstanceIdIsInvalid() {
 
-        UrlServiceImpl invalidUrlServiceImpl = new UrlServiceImpl(urlRepository, -1, null);
-        UrlServiceImpl invalidUrlServiceImpl2 = new UrlServiceImpl(urlRepository, -1, null);
+        UrlServiceImpl invalidUrlServiceImpl = new UrlServiceImpl(urlRepository, -1, eventPublisher);
+        UrlServiceImpl invalidUrlServiceImpl2 = new UrlServiceImpl(urlRepository, -1, eventPublisher);
         CreateShortUrlRecord record = new CreateShortUrlRecord(
                 "https://original-website.com", "user@email.com", null);
 

@@ -14,6 +14,7 @@ import space.rodrigorocha.short_url.short_url_creator.service.UrlService;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Objects;
 
 @Service
 public class UrlServiceImpl implements UrlService {
@@ -30,7 +31,7 @@ public class UrlServiceImpl implements UrlService {
                           UrlCreationEventPublisher eventPublisher) {
         this.urlRepository = urlRepository;
         this.instanceId = instanceId;
-        this.eventPublisher = eventPublisher;
+        this.eventPublisher = Objects.requireNonNull(eventPublisher, "eventPublisher");
     }
 
     public String createShortUrl(CreateShortUrlRecord record)  {

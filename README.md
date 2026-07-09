@@ -104,7 +104,7 @@ The system also includes:
 | API Gateway | Central entry point for requests | Created |
 | Short URL Service | URL creation and management | Created |
 | Redirect Service | Fast URL resolution and redirection | Created |
-| Projector Service | Make the projection from the Write modal do the Read model | Created |
+| Projector Service | Project the write model to the read model  | Created |
 | Analytics Service | Asynchronous analytics processing | Planned |
 | User Service | User management | Planned |
 | Keycloak | Authentication and authorization | Planned |

@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.MediaType;
+import org.springframework.http.MediaType;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,9 +60,9 @@ class UrlControllerTest {
 
     @Test
     void createCustomUrl_ShouldReturn200AndUrl_WhenSuccessful() throws Exception {
-
         CreateCustomUrlRecord record = new CreateCustomUrlRecord(
-                "meu-link", "https://site-original.com", "user@email.com", null);
+                "https://site-original.com", "meu-link", "user@email.com", null);
+
         when(urlService.createCustomUrl(any(CreateCustomUrlRecord.class))).thenReturn("meu-link");
 
         mockMvc.perform(post("/api/urls/custom")
@@ -74,9 +74,9 @@ class UrlControllerTest {
 
     @Test
     void createCustomUrl_ShouldReturn409_WhenUrlAlreadyExists() throws Exception {
-
         CreateCustomUrlRecord record = new CreateCustomUrlRecord(
-                "meu-link", "https://site-original.com", "user@email.com", null);
+                "https://site-original.com", "meu-link", "user@email.com", null);
+
         when(urlService.createCustomUrl(any(CreateCustomUrlRecord.class)))
                 .thenThrow(new CustomUrlAlreadyExistsException("Custom URL already exists"));
 
