@@ -1,29 +1,27 @@
-package space.rodrigorocha.redirect_service.model;
+package space.rodrigorocha.short_url.url_read_projector.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import org.springframework.data.redis.core.TimeToLive;
 
-import java.io.Serializable;
-
-@RedisHash(value = "url")
-public class Url implements Serializable {
+@RedisHash("url")
+public class UrlReadModel {
 
     @Id
     private String shortUrl;
 
     private String redirectUrl;
 
-    @Indexed
-    private String userEmail;
+    @TimeToLive
+    private Long ttlInSeconds;
 
-    public Url() {
+    public UrlReadModel() {
     }
 
-    public Url(String shortUrl, String redirectUrl, String userEmail) {
+    public UrlReadModel(String shortUrl, String redirectUrl, Long ttlInSeconds) {
         this.shortUrl = shortUrl;
         this.redirectUrl = redirectUrl;
-        this.userEmail = userEmail;
+        this.ttlInSeconds = ttlInSeconds;
     }
 
     public String getShortUrl() {
@@ -42,11 +40,11 @@ public class Url implements Serializable {
         this.redirectUrl = redirectUrl;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public Long getTtlInSeconds() {
+        return ttlInSeconds;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setTtlInSeconds(Long ttlInSeconds) {
+        this.ttlInSeconds = ttlInSeconds;
     }
 }

@@ -9,6 +9,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import space.rodrigorocha.short_url.short_url_creator.repository.UrlRepository;
+import space.rodrigorocha.short_url.short_url_creator.service.UrlCreationEventPublisher;
 import space.rodrigorocha.short_url.short_url_creator.service.UrlService;
 
 import java.security.SecureRandom;
@@ -22,9 +23,14 @@ public class UrlServiceImpl implements UrlService {
     private final UrlRepository urlRepository;
     private final int instanceId;
 
-    public UrlServiceImpl(UrlRepository urlRepository, @Value("${app.instance.id}") int instanceId) {
+    private final UrlCreationEventPublisher eventPublisher;
+
+    public UrlServiceImpl(UrlRepository urlRepository,
+                          @Value("${app.instance.id}") int instanceId,
+                          UrlCreationEventPublisher eventPublisher) {
         this.urlRepository = urlRepository;
         this.instanceId = instanceId;
+        this.eventPublisher = eventPublisher;
     }
 
     public String createShortUrl(CreateShortUrlRecord record)  {
@@ -37,6 +43,7 @@ public class UrlServiceImpl implements UrlService {
            throw new CustomUrlAlreadyExistsException("Custom URL already exists");
         }
         urlRepository.save(customUrl);
+        eventPublisher.publishUrlCreationEvent(customUrl);
         return record.customUrl();
     }
 
@@ -49,6 +56,7 @@ public class UrlServiceImpl implements UrlService {
             if (!urlRepository.existsById(shortUrl)) {
                 Url url = new Url(shortUrl, originalUrl, userEmail, expiration);
                 urlRepository.save(url);
+                eventPublisher.publishUrlCreationEvent(url);
                 return shortUrl;
             }
             maxAttempts--;
@@ -70,6 +78,4 @@ public class UrlServiceImpl implements UrlService {
         }
         return sb.toString();
     }
-
-
 }

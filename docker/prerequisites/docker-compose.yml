@@ -1,7 +1,7 @@
 services:
-  redis1:
+  redis-write:
     image: redis:7.2
-    hostname: redis1
+    hostname: redis-write-1
     command: >
       redis-server
       --appendonly yes
@@ -11,7 +11,7 @@ services:
       --save 60 10000
       --maxmemory 256mb
       --maxmemory-policy allkeys-lru
-      --requirepass "${REDIS_PASSWORD:?REDIS_PASSWORD must be set}"
+      --requirepass "${REDIS_WRITE_PASSWORD:?REDIS_WRITE_PASSWORD must be set}"
     volumes:
       - redis-data:/data
     expose:
@@ -19,7 +19,34 @@ services:
     networks:
       - short-url-network
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_WRITE_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    
+  redis-read:
+    image: redis:7.2
+    hostname: redis-read-1
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --requirepass "${REDIS_READ_PASSWORD:?REDIS_READ_PASSWORD must be set}"
+    volumes:
+      - redis-data-read:/data
+    ports:
+      - "6380:6379"
+    networks:
+      - short-url-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_READ_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -121,12 +148,36 @@ services:
       retries: 10
       start_period: 60s
     restart: unless-stopped
+    
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    hostname: rabbitmq
+    environment:
+      TZ: ${TIMEZONE}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - short-url-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
 
 volumes:
   redis-data:
+  redis-data-read:
   redis-data-gateway:
   postgres-users:
   keycloak-postgres:
+  rabbitmq-data:
 
 networks:
   short-url-network:

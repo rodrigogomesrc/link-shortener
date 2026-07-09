@@ -6,6 +6,11 @@ spring:
       enabled: true
   config:
       import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}"
+  cloud:
+    stream:
+      bindings:
+        url-created-out-0:
+          destination: urls
 app:
   instance:
     id: ${INSTANCE_ID:0}

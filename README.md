@@ -35,7 +35,7 @@ The system also includes:
 - API Gateway
 - Service Discovery (to be implemented)
 - Centralized Configuration
-- Asynchronous messaging (to be implemented)
+- Asynchronous messaging 
 
 ---
 
@@ -50,14 +50,14 @@ The system also includes:
 - **Spring Config Server**
 - **Redis**
 - **Resilience4J**
+- **RabbitMQ**
 - **JUnit**
+- **Keycloak**
+- **OAuth2**
 
 ## Planned / In Progress
 
 - **Spring Discovery Server**
-- **RabbitMQ**
-- **Keycloak**
-- **OAuth2**
 - **React**
 - **K6**
 - **Grafana**
@@ -86,7 +86,6 @@ The system also includes:
 
 - **Clean Code**
 - **SOLID**
-- **TDD**
 
 ## Planned / In Progress
 
@@ -105,6 +104,7 @@ The system also includes:
 | API Gateway | Central entry point for requests | Created |
 | Short URL Service | URL creation and management | Created |
 | Redirect Service | Fast URL resolution and redirection | Created |
+| Projector Service | Make the projection from the Write modal do the Read model | Created |
 | Analytics Service | Asynchronous analytics processing | Planned |
 | User Service | User management | Planned |
 | Keycloak | Authentication and authorization | Planned |

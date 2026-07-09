@@ -36,7 +36,7 @@ public class UrlServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        urlService = new UrlServiceImpl(urlRepository, VALID_INSTANCE_ID);
+        urlService = new UrlServiceImpl(urlRepository, VALID_INSTANCE_ID, null);
     }
 
     @Test
@@ -144,8 +144,8 @@ public class UrlServiceImplTest {
     @Test
     void createShortUrl_ShouldThrowIllegalStateException_WhenInstanceIdIsInvalid() {
 
-        UrlServiceImpl invalidUrlServiceImpl = new UrlServiceImpl(urlRepository, -1);
-        UrlServiceImpl invalidUrlServiceImpl2 = new UrlServiceImpl(urlRepository, -1);
+        UrlServiceImpl invalidUrlServiceImpl = new UrlServiceImpl(urlRepository, -1, null);
+        UrlServiceImpl invalidUrlServiceImpl2 = new UrlServiceImpl(urlRepository, -1, null);
         CreateShortUrlRecord record = new CreateShortUrlRecord(
                 "https://original-website.com", "user@email.com", null);
 
