@@ -1,7 +1,9 @@
 package space.rodrigorocha.user_service.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,47 +11,53 @@ import space.rodrigorocha.user_service.exception.KeycloakIntegrationException;
 import space.rodrigorocha.user_service.exception.ResourceNotFoundException;
 import space.rodrigorocha.user_service.exception.UserAlreadyExistsException;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation error on fields", errors);
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidationExceptions(MethodArgumentNotValidException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Validation error on fields");
+        problemDetail.setDetail(ex.getMessage());
+        return problemDetail;
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFoundException(ResourceNotFoundException ex) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    public ProblemDetail handleNotFoundException(ResourceNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problemDetail.setTitle("Resource not found");
+        problemDetail.setDetail(ex.getMessage());
+        return problemDetail;
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), null);
+    public ProblemDetail handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problemDetail.setTitle("User already exists");
+        problemDetail.setDetail(ex.getMessage());
+        return problemDetail;
     }
 
     @ExceptionHandler(KeycloakIntegrationException.class)
-    public ResponseEntity<Map<String, Object>> handleIntegrationException(KeycloakIntegrationException ex) {
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), null);
+    public ProblemDetail handleIntegrationException(KeycloakIntegrationException ex) {
+        log.error("Keycloak integration error", ex);
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        problemDetail.setTitle("Keycloak integration error");
+        problemDetail.setDetail(ex.getMessage());
+        return problemDetail;
     }
 
-    private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message, Object details) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", status.value());
-        body.put("message", message);
-        if (details != null) {
-            body.put("details", details);
-        }
-        return new ResponseEntity<>(body, status);
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleGenericException(Exception ex) {
+
+        log.error("Unexpected error", ex);
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        problemDetail.setTitle("Internal Server Error");
+        problemDetail.setDetail("An unexpected error occurred");
+
+        return problemDetail;
     }
 }
 

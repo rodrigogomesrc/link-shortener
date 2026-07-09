@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
 
-@RedisHash(value = "urls")
+@RedisHash(value = "url")
 public class Url implements Serializable {
 
     @Id
